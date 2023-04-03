@@ -1,5 +1,4 @@
 let score = 0;
-let numCards = 10;
 const gameContainer = document.getElementById("game");
 const scoreBox = document.getElementById("score-box");
 const winMsg = document.getElementById("win-msg");
@@ -11,11 +10,17 @@ const COLORS = [
   "green",
   "orange",
   "purple",
+  "pink",
+  "lightblue",
+  "brown",
   "red",
   "blue",
   "green",
   "orange",
-  "purple"
+  "purple",
+  "pink",
+  "lightblue",
+  "brown"
 ];
 
 // here is a helper function to shuffle an array
@@ -43,6 +48,10 @@ function shuffle(array) {
 
 let shuffledColors = shuffle(COLORS);
 
+/**
+ * Called when pressing the start button. Removes the "hidden" class from the cards,
+ * and adds it to the start button
+ */
 function startGame(event, container = gameContainer) {
   for (let card of container.children) {
     card.classList.remove("hidden");
@@ -76,16 +85,18 @@ function createDivsForColors(colorArray) {
   }
 }
 
+//called when a card is flipped
 function handleCardClick(event, container = gameContainer) {
-  if(findNumberOfFlippedCards(container) >= 2) {
+  if(findNumberOfFlippedCards(container) >= 2) { //only 2 cards can be flipped over at any one time
     return;
   }
-  updateScore();
+  updateScore(); //increase score by one
   let clickedCard = event.target;
-  clickedCard.style.backgroundColor = clickedCard.classList[0];
+  clickedCard.style.backgroundColor = clickedCard.classList[0]; //flip card over to show it's color
   clickedCard.classList.add("flipped");
-  checkForMatch(clickedCard);
-  setTimeout(flipCardFaceDown, 1000, clickedCard);
+  checkForMatch(clickedCard); //check if there is another card currently flipped over that's the same color
+  setTimeout(flipCardFaceDown, 1000, clickedCard); //flip card face down after 1 second
+  //check to see if all matches have been found
   if(checkForWin(container)) {
       declareWinner();
   }
@@ -102,6 +113,11 @@ function flipCardFaceDown(card) {
   }
 }
 
+/**
+ * In order to win, every card must be "found"
+ * @param {*} container 
+ * @returns boolean
+ */
 function checkForWin(container) {
     for(card of container.children) {
       if(!card.classList.contains("found")) {
@@ -111,6 +127,12 @@ function checkForWin(container) {
     return true;
 }
 
+/**
+ * To check for match, we loop through all the cards, checking to see if there is a card with the 
+ * same color as the given card, is currently flipped over, and doesn't have the same id as the 
+ * given card
+ * @param {*} card 
+ */
 function checkForMatch(card) { 
   let color = card.classList[0]; 
   for(let otherCard of gameContainer.children) {
@@ -126,6 +148,7 @@ function checkForMatch(card) {
     }
 }
 
+//finds the number of temporarily "flipped" cards (not the found matches)
 function findNumberOfFlippedCards(gameContainer) {
   let count = 0;
   for(let card of gameContainer.children) {
@@ -133,23 +156,25 @@ function findNumberOfFlippedCards(gameContainer) {
       count++;
     }
   }
-  console.log("Count: " + count);
   return count;
 }
 
+//updates the displayed score
 function updateScore() {
   score++;
   scoreBox.innerText = "Score: " + score;
 }
 
+/**
+ * Displays the "You win!" message, and removes the eventListeners from the cards
+ * @param {*} container 
+ */
 function declareWinner(container = gameContainer) {
   winMsg.classList.remove("hidden");
   for(card of container.children) {
     card.removeEventListener("click", handleCardClick);
   }
 }
-
-
 
 // when the DOM loads
 createDivsForColors(shuffledColors);
