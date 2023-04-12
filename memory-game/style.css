@@ -2,11 +2,15 @@
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
+h1 {
+  margin: 20px;
+}
+
 #game div {
   border: 3px solid black;
-  width: 15%;
+  width: 10%;
   height: 200px;
-  margin: 10px;
+  margin: 8px;
   display: inline-block;
 }
 
@@ -21,7 +25,8 @@ button.start-btn {
   width: 90px;
   height: 50px;
   font-size:x-large;
-  margin: 10px;
+  margin-left: 40px;
+  margin-top: 10px;
 }
 
 .hidden {
@@ -30,7 +35,7 @@ button.start-btn {
 
 .header {
   display: flex;
-  justify-content:left;
+  justify-content:space-between;
   background-color: lightseagreen;
 }
 
@@ -38,3 +43,4 @@ p {
   margin-left: 20px;
   font-size: x-large;
 }
+

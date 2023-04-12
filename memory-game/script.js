@@ -1,4 +1,5 @@
 let score = 0;
+const cardsFlippedOver = [];
 const gameContainer = document.getElementById("game");
 const scoreBox = document.getElementById("score-box");
 const winMsg = document.getElementById("win-msg");
@@ -46,19 +47,26 @@ function shuffle(array) {
   return array;
 }
 
-let shuffledColors = shuffle(COLORS);
 
 /**
  * Called when pressing the start button. Removes the "hidden" class from the cards,
  * and adds it to the start button
  */
 function startGame(event, container = gameContainer) {
-  for (let card of container.children) {
-    card.classList.remove("hidden");
-  }
-  startBtn.classList.add("hidden");
+    for (let card of container.children) {
+      card.classList.remove("hidden");
+        // call a function handleCardClick when a div is clicked on
+      card.addEventListener("click", handleCardClick);
+      card.style.backgroundColor = "grey";
+    }
+    score = 0;
+    scoreBox.innerText = "Score: " + score;
+    startBtn.classList.add("hidden");
+    if(!winMsg.classList.contains("hidden")) { //hide win message (for when it's a game restart)
+      winMsg.classList.add("hidden");
+      resetGame();
+    }
 }
-startBtn.addEventListener("click", startGame);
 
 // this function loops over the array of colors
 // it creates a new div and gives it a class with the value of the color
@@ -76,8 +84,7 @@ function createDivsForColors(colorArray) {
     
     newDiv.style.backgroundColor = "grey";
 
-    // call a function handleCardClick when a div is clicked on
-    newDiv.addEventListener("click", handleCardClick);
+  
 
     // append the div to the element with an id of game
     gameContainer.append(newDiv);
@@ -87,30 +94,39 @@ function createDivsForColors(colorArray) {
 
 //called when a card is flipped
 function handleCardClick(event, container = gameContainer) {
-  if(findNumberOfFlippedCards(container) >= 2) { //only 2 cards can be flipped over at any one time
-    return;
-  }
-  updateScore(); //increase score by one
-  let clickedCard = event.target;
-  clickedCard.style.backgroundColor = clickedCard.classList[0]; //flip card over to show it's color
-  clickedCard.classList.add("flipped");
-  checkForMatch(clickedCard); //check if there is another card currently flipped over that's the same color
-  setTimeout(flipCardFaceDown, 1000, clickedCard); //flip card face down after 1 second
-  //check to see if all matches have been found
-  if(checkForWin(container)) {
-      declareWinner();
-  }
+    if(cardsFlippedOver.length >= 2) { //only 2 cards can be flipped over at any one time
+      return;
+    }
+    updateScore(); //increase score by one
+    let clickedCard = event.target;
+    clickedCard.style.backgroundColor = clickedCard.classList[0]; //flip card over to show it's color
+    clickedCard.classList.add("flipped");
+    cardsFlippedOver.push(clickedCard);
+    checkForMatch(clickedCard); //check if there is another card currently flipped over that's the same color
+    if(checkForWin(container)) {
+        declareWinner();
+        return;
+    }
+    if(cardsFlippedOver.length == 2) {
+      console.log("here");
+      setTimeout(flipCardsFaceDown, 1000); //flip cards face down after 1 second
+    }
+    //check to see if all matches have been found
+
 }
 
 /**
  * Flips a card face down, unless it has been "found" (it has been matched with another card)
  * @param {*} card 
  */
-function flipCardFaceDown(card) {
-  if(!card.classList.contains("found")) {
-    card.classList.remove("flipped");
-    card.style.backgroundColor = "grey";
+function flipCardsFaceDown() {
+  for(let card of cardsFlippedOver) {
+    if(!card.classList.contains("found")) {
+      card.classList.remove("flipped");
+      card.style.backgroundColor = "grey";
+    }
   }
+clearCardsFlippedOverArray();
 }
 
 /**
@@ -149,20 +165,25 @@ function checkForMatch(card) {
 }
 
 //finds the number of temporarily "flipped" cards (not the found matches)
-function findNumberOfFlippedCards(gameContainer) {
-  let count = 0;
-  for(let card of gameContainer.children) {
-    if(card.classList.contains("flipped")) {
-      count++;
-    }
-  }
-  return count;
-}
+// function findNumberOfFlippedCards(gameContainer) {
+//   let count = 0;
+//   for(let card of gameContainer.children) {
+//     if(card.classList.contains("flipped")) {
+//       count++;
+//     }
+//   }
+//   return count;
+// }
 
 //updates the displayed score
 function updateScore() {
   score++;
   scoreBox.innerText = "Score: " + score;
+}
+
+function clearCardsFlippedOverArray() {
+  cardsFlippedOver.pop();
+  cardsFlippedOver.pop();
 }
 
 /**
@@ -173,8 +194,22 @@ function declareWinner(container = gameContainer) {
   winMsg.classList.remove("hidden");
   for(card of container.children) {
     card.removeEventListener("click", handleCardClick);
+    card.classList.remove("found");
+  }
+    startBtn.innerText = "Restart"
+    startBtn.classList.remove("hidden");
+    clearCardsFlippedOverArray();
+}
+
+function resetGame(container = gameContainer) {
+  shuffledColors = shuffle(COLORS);
+  for(let i = 0; i < container.childElementCount; i++) {
+    container.children[i].className = shuffledColors[i];
   }
 }
 
+let shuffledColors = shuffle(COLORS);
+
 // when the DOM loads
+startBtn.addEventListener("click", startGame);
 createDivsForColors(shuffledColors);
