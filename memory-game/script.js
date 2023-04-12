@@ -1,3 +1,8 @@
+/**
+ * SEC Memory Game
+ * Cards flip over after 1 second, if not matched. No best score is currently stored.
+ * I added a few additional cards to make the game more challenging.
+ */
 let score = 0;
 const cardsFlippedOver = [];
 const gameContainer = document.getElementById("game");
@@ -108,11 +113,9 @@ function handleCardClick(event, container = gameContainer) {
         return;
     }
     if(cardsFlippedOver.length == 2) {
-      console.log("here");
       setTimeout(flipCardsFaceDown, 1000); //flip cards face down after 1 second
     }
     //check to see if all matches have been found
-
 }
 
 /**
@@ -126,7 +129,7 @@ function flipCardsFaceDown() {
       card.style.backgroundColor = "grey";
     }
   }
-clearCardsFlippedOverArray();
+  clearCardsFlippedOverArray();
 }
 
 /**
@@ -163,17 +166,6 @@ function checkForMatch(card) {
       }
     }
 }
-
-//finds the number of temporarily "flipped" cards (not the found matches)
-// function findNumberOfFlippedCards(gameContainer) {
-//   let count = 0;
-//   for(let card of gameContainer.children) {
-//     if(card.classList.contains("flipped")) {
-//       count++;
-//     }
-//   }
-//   return count;
-// }
 
 //updates the displayed score
 function updateScore() {
@@ -213,3 +205,15 @@ let shuffledColors = shuffle(COLORS);
 // when the DOM loads
 startBtn.addEventListener("click", startGame);
 createDivsForColors(shuffledColors);
+
+//finds the number of temporarily "flipped" cards (not the found matches)
+// function findNumberOfFlippedCards(gameContainer) {
+//   let count = 0;
+//   for(let card of gameContainer.children) {
+//     if(card.classList.contains("flipped")) {
+//       count++;
+//     }
+//   }
+//   return count;
+// }
+
