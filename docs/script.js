@@ -4,7 +4,7 @@
  * I added a few additional cards to make the game more challenging.
  */
 let score = 0;
-const cardsFlippedOver = [];
+const cardsFlippedOver = []; //always contains either 0, 1, or 2 cards. (flipped over momentarily)
 const gameContainer = document.getElementById("game");
 const scoreBox = document.getElementById("score-box");
 const winMsg = document.getElementById("win-msg");
@@ -147,8 +147,8 @@ function checkForWin(container) {
 }
 
 /**
- * To check for match, we loop through all the cards, checking to see if there is a card with the 
- * same color as the given card, is currently flipped over, and doesn't have the same id as the 
+ * To check for match, we loop through all the cards, checking to see if there is a card with 1) the 
+ * same color as the given card, 2) is currently flipped over, and 3) doesn't have the same id as the 
  * given card
  * @param {*} card 
  */
